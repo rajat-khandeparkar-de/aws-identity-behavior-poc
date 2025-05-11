@@ -26,6 +26,8 @@ Built for Delivery Hero-style use cases involving:
 | 4    | Rule-based churn risk scoring |
 | 5    | Export campaign CSVs for high-value/at-risk customers |
 
+## Architecture Diagram TBD
+
 
 ## 🚀 Quickstart
 
