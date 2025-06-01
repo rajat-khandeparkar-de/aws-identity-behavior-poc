@@ -66,10 +66,16 @@ logger.info("Sample joined data:")
 joined_df.show(5, truncate=False)
 
 # Coalesce to pick first matched customer_id
-final_df = joined_df.withColumn(
+final_df = joined_df.select(
+    "events.*",
+    "customer_id_device",
+    "customer_id_email"
+).withColumn(
     "unified_customer_id",
     coalesce("customer_id_device", "customer_id_email")
-)
+).drop("customer_id_device", "customer_id_email")
+
+# Drop duplicates (optional)
 final_df = final_df.dropDuplicates()
 logger.info("Sample Final data:")
 final_df.show(5, truncate=False)
