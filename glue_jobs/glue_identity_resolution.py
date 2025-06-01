@@ -49,7 +49,6 @@ events_df.show(5, truncate=False)
 events = events_df.alias("events")
 crm_device = crm_df.alias("crm_device")
 crm_email = crm_df.alias("crm_email")
-crm_phone = crm_df.alias("crm_phone")
 
 # Join
 logger.info("Joining Events with CRM data on device_id...")
@@ -71,14 +70,15 @@ final_df = joined_df.withColumn(
     "unified_customer_id",
     coalesce("customer_id_device", "customer_id_email")
 )
+final_df = final_df.dropDuplicates()
 logger.info("Sample Final data:")
 final_df.show(5, truncate=False)
-logger.info("Job complete. Committing...")
-job.commit()
-logger.info("Glue job finished successfully.")
+
 
 # Write resolved output to S3 (Parquet)
 output_path = f"s3://aws-identity-behavior-poc-bucket/clean/events_resolved/dt={event_dt}/"
 final_df.write.mode("overwrite").partitionBy("market").parquet(output_path)
 
+logger.info("Job complete. Committing...")
+logger.info("Glue job finished successfully.")
 job.commit()
